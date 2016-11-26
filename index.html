@@ -1,0 +1,174 @@
+<!DOCTYPE html >
+<html lang="en">
+<head>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.6/ngStorage.min.js"></script>-->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/ngstorage/0.3.6/ngStorage.min.js"></script>
+    <link rel='stylesheet' href='http://cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.9.0/loading-bar.min.css'
+          type='text/css' media='all'/>
+    <script type='text/javascript'
+            src='http://cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.9.0/loading-bar.min.js'></script>
+    <script src="jquery.js"></script>
+    <link rel="stylesheet" href="app.css">
+    <script src="app.js"></script>
+    <script src="controllers/getDetailsCtrl.js"></script>
+    <script src="services/getDetaSvc.js"></script>
+    <script src="directive/dirPagination.js"></script>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body ng-app="task">
+<div class="row" ng-controller="getDetailsCtrl">
+
+    <div class="side-menu">
+
+        <nav class="navbar navbar-default" role="navigation">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <div class="brand-wrapper">
+                    <!-- Hamburger -->
+                    <button type="button" class="navbar-toggle">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+
+                    <!-- Brand -->
+                    <div class="brand-name-wrapper">
+                        <a class="navbar-brand" href="#">
+                            REPOS
+                        </a>
+                    </div>
+
+                    <!-- Search -->
+                    <a data-toggle="collapse" href="#search" class="btn btn-default" id="search-trigger">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </a>
+
+                    <!-- Search body -->
+                    <div id="search" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <form class="navbar-form" role="search">
+                                <div class="form-group">
+                                    <input type="text" ng-model="searchKeyword" class="form-control"
+                                           placeholder="Search">
+                                </div>
+                                <button type="submit" class="btn btn-default "><span
+                                        class="glyphicon glyphicon-ok"></span></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Main Menu -->
+            <div class="side-menu-container">
+                <ul class="nav navbar-nav">
+
+
+                    <li class="active" ng-click="order('name')"><a href=""><span
+                            class="glyphicon glyphicon-sort-by-attributes-alt"></span>sort by</a></li>
+
+
+                    <!-- Dropdown-->
+                    <li class="panel panel-default" id="dropdown">
+                        <a data-toggle="collapse" href="#dropdown-lvl1">
+                            <span class="glyphicon glyphicon-sort-by-attributes"></span> Sub Level <span
+                                class="caret"></span>
+                        </a>
+
+                        <!-- Dropdown level 1 -->
+                        <div id="dropdown-lvl1" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <ul class="nav navbar-nav">
+                                    <li ng-click=" order('forks')"><a href="">forks</a></li>
+                                    <li ng-click=" order('stargazers_count')"><a href="">score</a></li>
+                                    <li><a href="" ng-click="order('updated_at')">updated</a></li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li><a href=""><span class="glyphicon glyphicon-align-center"></span> submit</a></li>
+
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </nav>
+
+    </div>
+
+    <!-- Main Content -->
+    <div class="container-fluid">
+
+        <div class="side-body">
+            <h1>REPOSITORY'S</h1>
+<div > </div>
+            <table class="table table-fixed">
+                <thead>
+                <tr>
+                    <th class="col-xs-6"  ng-click=" order('name')">
+                                            name
+                        <span ng-show="list == 'name' && reverse" class="glyphicon glyphicon-chevron-down"></span>
+                        <span ng-show="list == 'name' && !reverse" class="glyphicon glyphicon-chevron-up"></span>
+                    </th>
+                    <th class="col-xs-2"  ng-click=" order('forks')">
+                                              forks
+                        <span ng-show="list == 'forks' && reverse" class="glyphicon glyphicon-chevron-down"></span>
+                        <span ng-show="list == 'forks' && !reverse" class="glyphicon glyphicon-chevron-up"></span>
+                    </th>
+                    <th class="col-xs-2" ng-click=" order('stargazers_count')">
+                                              stars
+                        <span ng-show="list == 'stargazers_count' && reverse" class="glyphicon glyphicon-chevron-down"></span>
+                        <span ng-show="list == 'stargazers_count' && !reverse" class="glyphicon glyphicon-chevron-up"></span>
+                    </th>
+                    <th class="col-xs-2" ng-click="order('updated_at')">
+                                              updated
+                        <span ng-show="list == 'updated_at' && reverse" class="glyphicon glyphicon-chevron-down"></span>
+                        <span ng-show="list == 'updated_at' && !reverse" class="glyphicon glyphicon-chevron-up"></span>
+                    </th>
+                </tr>
+                </thead>
+
+                <tr dir-paginate="x in totallist | filter: searchKeyword | orderBy:list:reverse | itemsPerPage:10| limitTo:limit ">
+
+
+                    <td class="col-xs-6"><a href="{{x.url}}"> {{x.name}}</a></td>
+                    <td class="col-xs-2">{{x.forks}}</td>
+                    <td class="col-xs-2">{{x.stargazers_count}}</td>
+                    <td class="col-xs-2">{{x.updated_at}}</td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+</div>
+
+<pagination total-items="totalItems" ng-model="currentPage"
+            boundary-links="true"
+            items-per-page="numPerPage" class="pagination-sm">
+
+</pagination>
+<div class="modal-footer">
+    <select name="hall" id="hall" ng-model="limit" class="opt">
+        <option >3</option>
+        <option >5</option>
+        <option>8</option>
+    </select>
+    <dir-pagination-controls max-size="10" direction-link="true" boundary-links="true"></dir-pagination-controls>
+</div>
+
+</body>
+
+</html>
